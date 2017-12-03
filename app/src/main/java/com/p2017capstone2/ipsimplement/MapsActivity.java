@@ -1,85 +1,82 @@
 package com.p2017capstone2.ipsimplement;
 
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends FragmentActivity implements OnMapClickListener {
 
-    private GoogleMap mMap;
-    LocationManager locationManager;
-    String locationProvider;
+    private GoogleMap mGoogleMap;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
+        // BitmapDescriptorFactory 생성하기 위한 소스
+        MapsInitializer.initialize(getApplicationContext());
+
+        init();
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+    /** Map 클릭시 터치 이벤트 */
+    public void onMapClick(LatLng point) {
 
-        // Add a marker in Sydney and move the camera
-        LatLng location = new LatLng(37.56, 126.97);
-        mMap.addMarker(new MarkerOptions().position(location).title("Marker in Seoul"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        // 현재 위도와 경도에서 화면 포인트를 알려준다
+        Point screenPt = mGoogleMap.getProjection().toScreenLocation(point);
+
+        // 현재 화면에 찍힌 포인트로 부터 위도와 경도를 알려준다.
+        LatLng latLng = mGoogleMap.getProjection().fromScreenLocation(screenPt);
+
+        Log.d("맵좌표", "좌표: 위도(" + String.valueOf(point.latitude) + "), 경도("
+                + String.valueOf(point.longitude) + ")");
+        Log.d("화면좌표", "화면좌표: X(" + String.valueOf(screenPt.x) + "), Y("
+                + String.valueOf(screenPt.y) + ")");
     }
 
+    private void init() {
 
+        GooglePlayServicesUtil.isGooglePlayServicesAvailable(MapsActivity.this);
+        mGoogleMap = ((SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map)).getMap();
 
-    //------------------------------------------
-    //	Override : Location Listener methods
-    //------------------------------------------
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.i("called", "onLocationChanged");
+        // 맵의 이동
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
 
-        double lat, lon;
-        lat = location.getLatitude();
-        lon = location.getLongitude();
+        GPSInfo gps = new GPSInfo(MapsActivity.this);
+        // GPS 사용유무 가져오기
+        if (gps.isGetLocation()) {
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
 
-        //when the location changes, update the map by zooming to the location
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(lat,lon));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lon)).title("Marker in Seoul"));
-        this.mMap.moveCamera(center);
+            // Creating a LatLng object for the current location
+            LatLng latLng = new LatLng(latitude, longitude);
 
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
-        this.mMap.animateCamera(zoom);
+            // Showing the current location in Google Map
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+            // Map 을 zoom 합니다.
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
+            // 마커 설정.
+            MarkerOptions optFirst = new MarkerOptions();
+            optFirst.position(latLng);// 위도 • 경도
+            optFirst.title("Current Position");// 제목 미리보기
+            optFirst.snippet("Snippet");
+            //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
+            mGoogleMap.addMarker(optFirst).showInfoWindow();
+        }
     }
-
-    @Override
-    public void onProviderDisabled(String arg0) {Log.i("called", "onProviderDisabled");}
-
-    @Override
-    public void onProviderEnabled(String arg0) {Log.i("called", "onProviderEnabled");}
-
-    @Override
-    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {Log.i("called", "onStatusChanged");}
 }
