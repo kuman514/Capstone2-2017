@@ -5,19 +5,23 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMapClickListener {
 
     private GoogleMap mGoogleMap;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,29 +35,31 @@ public class MapsActivity extends FragmentActivity implements OnMapClickListener
         init();
     }
 
+
+
     /** Map 클릭시 터치 이벤트 */
     public void onMapClick(LatLng point) {
-
+        /*
         // 현재 위도와 경도에서 화면 포인트를 알려준다
         Point screenPt = mGoogleMap.getProjection().toScreenLocation(point);
 
         // 현재 화면에 찍힌 포인트로 부터 위도와 경도를 알려준다.
-        LatLng latLng = mGoogleMap.getProjection().fromScreenLocation(screenPt);
+        //LatLng latLng = mGoogleMap.getProjection().fromScreenLocation(screenPt);
 
-        Log.d("맵좌표", "좌표: 위도(" + String.valueOf(point.latitude) + "), 경도("
-                + String.valueOf(point.longitude) + ")");
-        Log.d("화면좌표", "화면좌표: X(" + String.valueOf(screenPt.x) + "), Y("
-                + String.valueOf(screenPt.y) + ")");
+        Log.d("맵좌표", "좌표: 위도(" + String.valueOf(point.latitude) + "), 경도(" + String.valueOf(point.longitude) + ")");
+        Log.d("화면좌표", "화면좌표: X(" + String.valueOf(screenPt.x) + "), Y(" + String.valueOf(screenPt.y) + ")");
+        */
     }
+
+
 
     private void init() {
 
-        GooglePlayServicesUtil.isGooglePlayServicesAvailable(MapsActivity.this);
-        mGoogleMap = ((SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map)).getMap();
+        GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
         // 맵의 이동
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.56, 126.97), 15));
 
         GPSInfo gps = new GPSInfo(MapsActivity.this);
         // GPS 사용유무 가져오기
@@ -75,8 +81,18 @@ public class MapsActivity extends FragmentActivity implements OnMapClickListener
             optFirst.position(latLng);// 위도 • 경도
             optFirst.title("Current Position");// 제목 미리보기
             optFirst.snippet("Snippet");
-            //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
+            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
             mGoogleMap.addMarker(optFirst).showInfoWindow();
         }
     }
+
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(37.56, 126.97))
+                .title("Marker"));
+    }
+
 }

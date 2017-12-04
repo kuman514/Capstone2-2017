@@ -45,21 +45,20 @@ public class GPSInfo extends Service implements LocationListener {
 
     protected LocationManager locationManager;
 
+
+
     public GPSInfo(Context context) {
         this.mContext = context;
         getLocation();
     }
 
+
+
     public Location getLocation() {
         try {
-            locationManager = (LocationManager) mContext
-                    .getSystemService(LOCATION_SERVICE);
-
-            isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (!isGPSEnabled && !isNetworkEnabled) {
             } else {
@@ -102,25 +101,24 @@ public class GPSInfo extends Service implements LocationListener {
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return location;
     }
 
-    /**
-     * GPS 종료
-     * */
+
+
+    // GPS 종료
     public void stopUsingGPS() {
         if (locationManager != null) {
             locationManager.removeUpdates(GPSInfo.this);
         }
     }
 
-    /**
-     * 위도값
-     * */
+
+
+    // 위도값
     public double getLatitude() {
         if (location != null) {
             lat = location.getLatitude();
@@ -128,9 +126,9 @@ public class GPSInfo extends Service implements LocationListener {
         return lat;
     }
 
-    /**
-     * 경도값
-     * */
+
+
+    // 경도값
     public double getLongitude() {
         if (location != null) {
             lon = location.getLongitude();
@@ -138,13 +136,17 @@ public class GPSInfo extends Service implements LocationListener {
         return lon;
     }
 
+
+
+
     public boolean isGetLocation() {
         return this.isGetLocation;
     }
 
-    /**
-     * GPS 정보를 가져오지 못했을때 설정값으로 갈지 물어보는 alert 창
-     * */
+
+
+
+    // GPS 정보를 가져오지 못했을때 설정값으로 갈지 물어보는 alert 창
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
                 mContext);
@@ -172,15 +174,21 @@ public class GPSInfo extends Service implements LocationListener {
         alertDialog.show();
     }
 
+
+
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
     }
 
+
+
     public void onLocationChanged(Location location) {
         // TODO Auto-generated method stub
 
     }
+
+
 
     public void onStatusChanged(String provider, int status,
                                 Bundle extras) {
@@ -188,10 +196,14 @@ public class GPSInfo extends Service implements LocationListener {
 
     }
 
+
+
     public void onProviderEnabled(String provider) {
         // TODO Auto-generated method stub
 
     }
+
+
 
     public void onProviderDisabled(String provider) {
         // TODO Auto-generated method stub
