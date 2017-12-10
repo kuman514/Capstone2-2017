@@ -26,13 +26,10 @@ public class GPSInfo extends Service implements LocationListener {
 
     // 현재 GPS 사용유무
     boolean isGPSEnabled = false;
-
     // 네트워크 사용유무
     boolean isNetworkEnabled = false;
-
     // GPS 상태값
     boolean isGetLocation = false;
-
     Location location;
     double lat; // 위도
     double lon; // 경도
@@ -184,8 +181,14 @@ public class GPSInfo extends Service implements LocationListener {
 
 
     public void onLocationChanged(Location location) {
-        // TODO Auto-generated method stub
-
+        Log.d("GPSLocationChanged", "Invoked");
+        this.location = location;
+        if (this.location != null) {
+            lat = this.location.getLatitude();
+            lon = this.location.getLongitude();
+        }
+        Log.d("GPSLocationChanged", "lat:" + lat + ", lon:" + lon);
+        ((MapsActivity) mContext).browseLocation();
     }
 
 
