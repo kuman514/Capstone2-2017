@@ -17,7 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 /**
- * Created by 이시 on 2017-12-03.
+ * Created by kuman514 on 2017-12-03.
  */
 
 public class GPSInfo extends Service implements LocationListener {
@@ -62,8 +62,8 @@ public class GPSInfo extends Service implements LocationListener {
 
             if (!isGPSEnabled && !isNetworkEnabled) {
             } else {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // 권한이 부여되지 않은 경우를 얘기하는듯?
                     Log.e("Permission Denied","Check Permissions to use.");
                 }

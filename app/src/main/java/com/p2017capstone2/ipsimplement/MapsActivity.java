@@ -17,82 +17,73 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMapClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mGoogleMap;
+    private GPSInfo gps;
 
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i("OnCreate", "Invoked");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
         // BitmapDescriptorFactory 생성하기 위한 소스
         MapsInitializer.initialize(getApplicationContext());
-
-        init();
-    }
-
-
-
-    /** Map 클릭시 터치 이벤트 */
-    public void onMapClick(LatLng point) {
-        /*
-        // 현재 위도와 경도에서 화면 포인트를 알려준다
-        Point screenPt = mGoogleMap.getProjection().toScreenLocation(point);
-
-        // 현재 화면에 찍힌 포인트로 부터 위도와 경도를 알려준다.
-        //LatLng latLng = mGoogleMap.getProjection().fromScreenLocation(screenPt);
-
-        Log.d("맵좌표", "좌표: 위도(" + String.valueOf(point.latitude) + "), 경도(" + String.valueOf(point.longitude) + ")");
-        Log.d("화면좌표", "화면좌표: X(" + String.valueOf(screenPt.x) + "), Y(" + String.valueOf(screenPt.y) + ")");
-        */
-    }
-
-
-
-    private void init() {
-
         GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
-
-        // 맵의 이동
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.56, 126.97), 15));
-
-        GPSInfo gps = new GPSInfo(MapsActivity.this);
-        // GPS 사용유무 가져오기
-        if (gps.isGetLocation()) {
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
-
-            // Creating a LatLng object for the current location
-            LatLng latLng = new LatLng(latitude, longitude);
-
-            // Showing the current location in Google Map
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-            // Map 을 zoom 합니다.
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
-
-            // 마커 설정.
-            MarkerOptions optFirst = new MarkerOptions();
-            optFirst.position(latLng);// 위도 • 경도
-            optFirst.title("Current Position");// 제목 미리보기
-            optFirst.snippet("Snippet");
-            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
-            mGoogleMap.addMarker(optFirst).showInfoWindow();
-        }
     }
 
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(37.56, 126.97))
-                .title("Marker"));
+        Log.i("OnMapReady", "Invoked");
+
+        mGoogleMap = googleMap;
+        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(37.56, 126.97)).title("Test"));
+
+        // 맵의 이동
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.56, 126.97), 13));
+        init();
+    }
+
+
+
+    private void init() {
+        Log.i("init", "Invoked");
+
+        gps = new GPSInfo(MapsActivity.this);
+
+        // GPS 사용유무 가져오기
+        if (gps.isGetLocation()) {
+            Log.d("GPS","Get location");
+
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
+
+            Log.d("init()", "lat:" + latitude + ", lon:" + longitude);
+
+            // Creating a LatLng object for the current location
+            LatLng latLng = new LatLng(latitude, longitude);
+
+            // Showing the current location in Google Map
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.56, 126.97), 15));
+
+            // Map 을 zoom 합니다.
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+
+            // 마커 설정.
+            MarkerOptions optFirst = new MarkerOptions();
+            optFirst.position(latLng);// 위도 • 경도
+            optFirst.title("Current Position");// 제목 미리보기
+            optFirst.snippet("Snippet");
+            mGoogleMap.addMarker(optFirst).showInfoWindow();
+        }
     }
 
 }
