@@ -188,6 +188,7 @@ public class GPSInfo extends Service implements LocationListener {
         Log.d("GPSLocationChanged", "Invoked");
 
         // 현재 위치가 바뀔 때마다 location을 업데이트하여 lat과 lon에 저장을 한다.
+        // 참고: this.location은 구 데이터, 그냥 location은 업데이트에 쓰일 현 데이터.
         this.location = location;
         if (this.location != null) {
             lat = this.location.getLatitude();
@@ -217,19 +218,19 @@ public class GPSInfo extends Service implements LocationListener {
 
 
 
-    // 상태가 변경될 때마다
+    // 위치 공급자의 상태가 바뀔 때 호출됨.
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
 
 
-    // ?
+    // 위치 공급자가 사용 가능해질(enabled) 때 호출됨.
     public void onProviderEnabled(String provider) {
     }
 
 
 
-    // ?
+    // 위치 공급자가 사용 불가능해질(disabled) 때 호출됨.
     public void onProviderDisabled(String provider) {
     }
 
