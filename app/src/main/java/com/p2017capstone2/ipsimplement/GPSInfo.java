@@ -34,11 +34,11 @@ public class GPSInfo extends Service implements LocationListener {
     double lat; // 위도
     double lon; // 경도
 
-    // GPS 정보 업데이트 거리 10미터
-    private static final long MIN_DISTANCE_UPDATES = 10;
+    // GPS 정보 갱신에 필요한 최소 거리
+    private static final long MIN_DISTANCE_UPDATES = 0;
 
-    // GPS 정보 업데이트 시간 1/1000
-    private static final long MIN_TIME_UPDATES = 1000 * 60 * 1;
+    // GPS 정보 갱신 주기
+    private static final long MIN_TIME_UPDATES = 0;
 
     protected LocationManager locationManager;
 
@@ -187,30 +187,35 @@ public class GPSInfo extends Service implements LocationListener {
             lat = this.location.getLatitude();
             lon = this.location.getLongitude();
         }
-        Log.d("GPSLocationChanged", "lat:" + lat + ", lon:" + lon);
+        //Log.d("GPSLocationChanged", "lat:" + lat + ", lon:" + lon);
         ((MapsActivity) mContext).browseLocation();
+
+        // check the location
+        checkLocation();
     }
 
 
 
-    public void onStatusChanged(String provider, int status,
-                                Bundle extras) {
-        // TODO Auto-generated method stub
+    void checkLocation() {
+        // onLocationChanged() 전용 함수. 샘플 위치 범위에 있으면 헬로 바스티온을 출력.
+        if((127.05 <= lon && lon <= 127.15) && (37.555 <= lat && lat <= 37.565)){
+            Log.i("Hello","Bastion");
+        }
+    }
 
+
+
+    public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
 
 
     public void onProviderEnabled(String provider) {
-        // TODO Auto-generated method stub
-
     }
 
 
 
     public void onProviderDisabled(String provider) {
-        // TODO Auto-generated method stub
-
     }
 
 }
