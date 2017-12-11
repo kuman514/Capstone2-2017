@@ -22,6 +22,7 @@ import android.util.Log;
 
 public class GPSInfo extends Service implements LocationListener {
 
+    // MapsActivity와 연결하기 위한 인스턴스 변수
     private final Context mContext;
 
     // 현재 GPS 사용유무
@@ -30,9 +31,11 @@ public class GPSInfo extends Service implements LocationListener {
     boolean isNetworkEnabled = false;
     // GPS 상태값
     boolean isGetLocation = false;
-    Location location;
-    double lat; // 위도
-    double lon; // 경도
+
+    // 현재 GPS 위치를 받아오고자 하는 인스턴스 변수
+    Location location;  // 위도와 경도를 포함하는 location 인스턴스
+    double lat;         // 위도
+    double lon;         // 경도
 
     // GPS 정보 갱신에 필요한 최소 거리
     private static final long MIN_DISTANCE_UPDATES = 0;
@@ -61,7 +64,7 @@ public class GPSInfo extends Service implements LocationListener {
             } else {
                 if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // 권한이 부여되지 않은 경우를 얘기하는듯?
+                    // 권한이 부여되지 않은 경우 에러를 로그에 표시
                     Log.e("Permission Denied","Check Permissions to use.");
                 }
 
@@ -115,7 +118,7 @@ public class GPSInfo extends Service implements LocationListener {
 
 
 
-    // 위도값
+    // 위도값 반환
     public double getLatitude() {
         if (location != null) {
             lat = location.getLatitude();
@@ -125,7 +128,7 @@ public class GPSInfo extends Service implements LocationListener {
 
 
 
-    // 경도값
+    // 경도값 반환
     public double getLongitude() {
         if (location != null) {
             lon = location.getLongitude();
@@ -180,24 +183,33 @@ public class GPSInfo extends Service implements LocationListener {
 
 
 
+    // 현재 위치가 바뀔 때마다 호출되는 함수
     public void onLocationChanged(Location location) {
         Log.d("GPSLocationChanged", "Invoked");
+
+        // 현재 위치가 바뀔 때마다 location을 업데이트하여 lat과 lon에 저장을 한다.
         this.location = location;
         if (this.location != null) {
             lat = this.location.getLatitude();
             lon = this.location.getLongitude();
         }
-        //Log.d("GPSLocationChanged", "lat:" + lat + ", lon:" + lon);
+
+        // MapsActivity에, 갱신된 현재 위치를 받아오도록 요청
         ((MapsActivity) mContext).browseLocation();
 
-        // check the location
-        checkLocation();
+        // 샘플 함수 사용. 위치를 테스트하고자 할때 사용함.
+        //checkLocation();
+
+        // TODO: 해당 부분에, 위치가 변경될 때마다 실행하고자 하는 로직을 넣으시오.
+        // TODO: MapsActivity에서의 표시가 필요한 경우, ((MapsActivity) mContext).MapsActivity멤버함수(); 를 써넣으면 됩니다.
+
+        // ========================================================================================
     }
 
 
 
     void checkLocation() {
-        // onLocationChanged() 전용 함수. 샘플 위치 범위에 있으면 헬로 바스티온을 출력.
+        // onLocationChanged() 전용 함수. 샘플 위치 범위(서울)에 있으면 헬로 바스티온을 출력.
         if((127.05 <= lon && lon <= 127.15) && (37.555 <= lat && lat <= 37.565)){
             Log.i("Hello","Bastion");
         }
@@ -205,16 +217,19 @@ public class GPSInfo extends Service implements LocationListener {
 
 
 
+    // 상태가 변경될 때마다
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
 
 
+    // ?
     public void onProviderEnabled(String provider) {
     }
 
 
 
+    // ?
     public void onProviderDisabled(String provider) {
     }
 

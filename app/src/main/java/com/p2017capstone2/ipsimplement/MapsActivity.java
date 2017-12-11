@@ -1,7 +1,5 @@
 package com.p2017capstone2.ipsimplement;
 
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -30,10 +28,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        // BitmapDescriptorFactory 생성하기 위한 소스
+        // googleMap 인스턴스를 생성하기 위한 로직
         MapsInitializer.initialize(getApplicationContext());
         GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        // 이후 onMapReady()를 참조
     }
 
 
@@ -42,10 +41,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.i("OnMapReady", "Invoked");
 
+        // 여기서 mGoogleMap이 구글맵 인스턴스를 받아와서 지도에 마커 표시 등등을 한다.
         mGoogleMap = googleMap;
-        //mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(37.56, 126.97)).title("Test"));
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.56, 126.97), 13));
-
+        // GPSInfo 인스턴스를 만든 뒤, 현재 위치를 바로 가져온다.
         init();
     }
 
@@ -65,12 +63,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (gps.isGetLocation()) {
             Log.d("browseLocation()","GPS Gets location");
 
+            // 현재 위치의 위도값과 경도값을 받아온다.
             double latitude = gps.getLatitude();
             double longitude = gps.getLongitude();
-
             Log.d("browseLocation()", "lat:" + latitude + ", lon:" + longitude);
 
-            // Creating a LatLng object for the current location
+            // 현재 위치에 대한 LanLng 인스턴스를 생성
             LatLng latLng = new LatLng(latitude, longitude);
 
             // 마커 설정.
@@ -79,12 +77,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             optFirst.position(latLng);
             optFirst.title("Current Position");
             optFirst.snippet("Snippet");
+
+            // 마커에 표시
             mGoogleMap.addMarker(optFirst).showInfoWindow();
 
-            // Showing the current location in Google Map
+            // 지도를 현재 위치를 보도록 카메라 돌리기
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            // Map 을 zoom 합니다.
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+            // 지도 줌 인
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
     }
 
