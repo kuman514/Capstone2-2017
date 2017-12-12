@@ -220,18 +220,23 @@ public class GPSInfo extends Service implements LocationListener {
 
     // 위치 공급자의 상태가 바뀔 때 호출됨.
     public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("OnStatusChanged", "provider: " + provider + ", status: " + status + ", extras:" + extras.toString());
     }
 
 
 
     // 위치 공급자가 사용 가능해질(enabled) 때 호출됨.
+    // 예 : GPS 기능 ON 등등
     public void onProviderEnabled(String provider) {
+        Log.d("OnProviderEnabled", "provider: " + provider);
     }
 
 
 
     // 위치 공급자가 사용 불가능해질(disabled) 때 호출됨.
+    // 예 : GPS 기능 OFF 등등
     public void onProviderDisabled(String provider) {
+        Log.d("OnProviderDisabled", "provider: " + provider);
     }
 
 }

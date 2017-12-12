@@ -20,6 +20,6 @@
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">바스티온 좋아용!</string>
-    <!-- 바스티온 좋아용!에 키값을 삽입할 것. -->
+    <!-- TODO: "비밀키 공개키 대칭키 포친키"에 키값을 삽입할 것. -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">비밀키 공개키 대칭키 포친키</string>
 </resources>

@@ -52,7 +52,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void init() {
         Log.i("init", "Invoked");
         gps = new GPSInfo(MapsActivity.this);
+
+        // 마커 설정
+        optFirst = new MarkerOptions();
+        optFirst.title("Current Position");
+        optFirst.snippet("It's you.");
+
+        // 현재 위치 가져오기
         browseLocation();
+
+        // 지도 줌 인
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
 
 
@@ -71,20 +81,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // 현재 위치에 대한 LanLng 인스턴스를 생성
             LatLng latLng = new LatLng(latitude, longitude);
 
-            // 마커 설정.
-            if(optFirst != null) optFirst = null;
-            optFirst = new MarkerOptions();
+            // 모든 마커 지우기
+            mGoogleMap.clear();
+
+            // 마커의 위치 설정
             optFirst.position(latLng);
-            optFirst.title("Current Position");
-            optFirst.snippet("Snippet");
 
             // 마커에 표시
             mGoogleMap.addMarker(optFirst).showInfoWindow();
 
             // 지도를 현재 위치를 보도록 카메라 돌리기
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            // 지도 줌 인
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
     }
 
