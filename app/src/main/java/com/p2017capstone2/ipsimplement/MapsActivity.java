@@ -1,5 +1,6 @@
 package com.p2017capstone2.ipsimplement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -19,6 +20,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GPSInfo gps;
     MarkerOptions optFirst;
 
+    // 임시 구현 : 숭실대입구역 각 출구 위치
+    LatLng[] SSUStation = {new LatLng(37.49506, 126.95444),
+                            new LatLng(37.49563, 126.95395),
+                            new LatLng(37.49588, 126.95420),
+                            new LatLng(37.49529, 126.95473)};
+    // 임시 구현 : 임시 오차값
+    double tmpErr = 0.000003;
+
 
 
     @Override
@@ -32,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MapsInitializer.initialize(getApplicationContext());
         GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+
         // 이후 onMapReady()를 참조
     }
 
@@ -92,7 +102,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // 지도를 현재 위치를 보도록 카메라 돌리기
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+            // 특정 위치 도달 시 액티비티 전환하기
+            goToAnotherActivity(latLng);
         }
+    }
+
+
+
+    // 임시 구현된 액티비티로 전환시키기
+    void goToAnotherActivity(LatLng ll) {
+        // 임시 구현 : 화면 전환을 위한 액티비티 임시 구현 할당
+        // 임시 구현 : 특정 지역에 도착 시 액티비티를 전환시킴
+        for(int i = 0; i < 4; i++)
+            if((SSUStation[i].longitude - tmpErr < ll.longitude && ll.longitude < SSUStation[i].longitude + tmpErr) &&
+                    (SSUStation[i].latitude - tmpErr < ll.latitude && ll.latitude < SSUStation[i].latitude + tmpErr))
+                // TODO: 여기에 변환시키고자 할 액티비티를 다음 포맷으로 기입하시오.
+                // startActivity(new Intent(this, 액티비티이름.class));
+                // CAUTION: 액티비티를 전환하고자 한다면, 먼저 반드시 매니페스트에 액티비티를 등록하세요.
+                startActivity(new Intent(this, TempActivity.class));
     }
 
 }
